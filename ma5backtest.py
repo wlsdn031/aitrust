@@ -5,10 +5,12 @@ import datetime
 access = "0hNyHckgUEQ0GpFb97xmHOtLGKx8AevNu7pzz2Vo"
 secret = "NtOH4y4d3G2I4gG13G1KVhAYhPck2xWMxLd6xYvd"
 
+selled = True
 
 def get_ma5m5(ticker):
     """5*5분 이동 평균선 조회"""
     df = pyupbit.get_ohlcv(ticker, interval="minute5", count=5)
+    time.sleep(0.1)
     ma5 = df['close'].rolling(5).mean().iloc[-1]
     return ma5
 
@@ -38,6 +40,7 @@ def get_current_price(ticker):
 """상승률 1위 찾기"""
 def get_next_target():
     global goldname
+    global goldcoin
     while goldname == "what":
         tickers = pyupbit.get_tickers(fiat="KRW")
         buying_candidate = []
@@ -56,14 +59,18 @@ def get_next_target():
         if len(sorted_buying) == 0:
             goldname = "pass"
         goldcoin=sorted_buying[-1:]
-        if goldcoin[1] <= 0 or goldname == "pass":
-            time.sleep(300)
+        goldcoin= goldcoin[0]
+        print(goldcoin)
+        if goldname == "pass":
             goldname = "what"
+            print("retarget")
+        elif goldcoin[1] < 0:
+            goldname = "what"
+            print("retarget")
         else:
             goldname=goldcoin[0]
+        return goldname, goldcoin
             
-
-selled = True
 goldname = "what"
 # 로그인
 upbit = pyupbit.Upbit(access, secret)
@@ -72,23 +79,26 @@ print("autotrade start")
 get_next_target()
 while True:
     try:
+        krw = get_balance("KRW")
         if selled==True:
             get_next_target()
-            krw = get_balance("KRW")
-            if krw > 5000:
-                upbit.buy_market_order(goldname, krw*0.9995)
-                selled = False
-            else:
-                time.sleep(3)
+            print(goldcoin, goldname)
+            if goldcoin[1]>0.005:
+                if krw > 5000:
+                    upbit.buy_market_order(goldname, krw*0.9995)
+                    selled = False
+                else:
+                    time.sleep(1)
         else:
-            if goldname > 5050/get_current_price(goldname):
+            get_current_price(goldname)
+            btname = goldname[4:]
+            btc = get_balance(btname)
+            if btc > 5050/get_current_price(goldname):
                 ma5m10=get_ma5m10(goldname)
                 ma5m5=get_ma5m5(goldname)
                 if ma5m5 > ma5m10 :
-                    time.sleep(3)
+                    time.sleep(1)
                 else:
-                    btname = goldname[4:]
-                    btc = get_balance(btname)
                     upbit.sell_market_order(goldname, btc*0.9995)
                     selled = True
                     goldname = "what"
