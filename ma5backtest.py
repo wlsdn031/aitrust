@@ -43,6 +43,7 @@ def get_next_target():
     global goldname
     global goldcoin
     while goldname == "what":
+        goldname = "what"
         goldcoin = []
         tickers = pyupbit.get_tickers(fiat="KRW")
         buying_candidate = []
@@ -77,9 +78,9 @@ def get_next_target():
 goldname = "what"
 # 로그인
 upbit = pyupbit.Upbit(access, secret)
+get_next_target()
 print("autotrade start")
 # 자동매매 시작
-get_next_target()
 while True:
     try:
         krw = get_balance("KRW")
