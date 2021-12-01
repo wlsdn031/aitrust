@@ -42,8 +42,8 @@ def get_current_price(ticker):
 def get_next_target():
     global goldname
     global goldcoin
+    goldname = "what"
     while goldname == "what":
-        goldname = "what"
         goldcoin = []
         tickers = pyupbit.get_tickers(fiat="KRW")
         buying_candidate = []
