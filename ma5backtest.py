@@ -10,15 +10,15 @@ selled = True
 def get_ma5m3(ticker):
     """3*5분 이동 평균선 조회"""
     df = pyupbit.get_ohlcv(ticker, interval="minute5", count=3)
-    time.sleep(0.3)
-    ma3 = df['close'].rolling(5).mean().iloc[-1]
+    time.sleep(0.2)
+    ma3 = df['close'].rolling(3).mean().iloc[-1]
     return ma3
 
 def get_ma5m5(ticker):
     """5*5분 이동 평균선 조회"""
     df = pyupbit.get_ohlcv(ticker, interval="minute5", count=5)
     time.sleep(0.15)
-    ma5 = df['close'].rolling(10).mean().iloc[-1]
+    ma5 = df['close'].rolling(5).mean().iloc[-1]
     return ma5
 
 def get_balance(ticker):
@@ -43,6 +43,7 @@ def get_next_target():
     global goldname
     global goldcoin
     while goldname == "what":
+        goldcoin = []
         tickers = pyupbit.get_tickers(fiat="KRW")
         buying_candidate = []
         for ticker in tickers:
@@ -52,7 +53,7 @@ def get_next_target():
                 buying_candidate.append([ticker,get_current_price(ticker)])
         buyinglist = []
         for coin in buying_candidate:
-            ma5m5=get_ma5m3(coin[0])
+            ma5m3=get_ma5m3(coin[0])
             coin[1] = ((coin[1]-ma5m3)/ma5m3)
             buyinglist.append(coin)
         sorted_buying = sorted(buyinglist, key=lambda x:x[1])
@@ -60,7 +61,8 @@ def get_next_target():
         if len(sorted_buying) == 0:
             goldname = "pass"
         goldcoin=sorted_buying[-1:]
-        goldcoin= goldcoin[0]
+        if len(goldcoin) > 0:
+            goldcoin= goldcoin[0]
         print(goldcoin)
         if goldname == "pass":
             goldname = "what"
@@ -95,8 +97,8 @@ while True:
             btname = goldname[4:]
             btc = get_balance(btname)
             if btc > 5050/get_current_price(goldname):
-                ma5m10=get_ma5m5(goldname)
-                ma5m5=get_ma5m3(goldname)
+                ma5m5=get_ma5m5(goldname)
+                ma5m3=get_ma5m3(goldname)
                 if ma5m3 > ma5m5 :
                     time.sleep(1)
                 else:
