@@ -87,7 +87,7 @@ while True:
         if selled==True:
             get_next_target()
             print(goldcoin, goldname)
-            if goldcoin[1]>0.01:
+            if goldcoin[1]>0.085:
                 if krw > 5000:
                     upbit.buy_market_order(goldname, krw*0.9995)
                     selled = False
