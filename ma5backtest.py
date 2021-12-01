@@ -10,13 +10,14 @@ selled = True
 def get_ma5m5(ticker):
     """5*5분 이동 평균선 조회"""
     df = pyupbit.get_ohlcv(ticker, interval="minute5", count=5)
-    time.sleep(0.1)
+    time.sleep(0.3)
     ma5 = df['close'].rolling(5).mean().iloc[-1]
     return ma5
 
 def get_ma5m10(ticker):
     """10*5분 이동 평균선 조회"""
     df = pyupbit.get_ohlcv(ticker, interval="minute5", count=10)
+    time.sleep(0.15)
     ma10 = df['close'].rolling(10).mean().iloc[-1]
     return ma10
 
