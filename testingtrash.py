@@ -44,7 +44,7 @@ def checking(ticker):
     slow_d = df['slow_d'][-1]
     slow_k = df['slow_k'][-1]
 
-    RSI = (df['ua'][-1] / (df['ua'][-1]+df['da'][-1])) * 100
+    RSI = (df['RSI'][-1] + df['RSI'][-2])/2
 
 def targeting():
     tickers = pyupbit.get_tickers(fiat="KRW")
@@ -62,7 +62,7 @@ def targeting():
         df['slow_d']=df['slow_k'].rolling(3).mean()
         slow_d = df['slow_d'][-1]
         slow_k = df['slow_k'][-1]
-        RSI = (df['ua'][-1] / (df['ua'][-1]+df['da'][-1])) * 100
+        RSI = (df['RSI'][-1] + df['RSI'][-2])/2
         
         if RSI < 25:
             if slow_d < slow_k < 25 :
