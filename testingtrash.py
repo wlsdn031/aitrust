@@ -44,7 +44,7 @@ def checking(ticker):
     slow_d = df['slow_d'][-1]
     slow_k = df['slow_k'][-1]
 
-    RSI = (df['RSI'][-1] + df['RSI'][-2])/2
+    RSI = (0.35*df['RSI'][-1]) + (0.65*df['RSI'][-2])
 
 def targeting():
     tickers = pyupbit.get_tickers(fiat="KRW")
@@ -88,7 +88,7 @@ while True:
             slow_d = df['slow_d'][-1]
             slow_k = df['slow_k'][-1]
 
-            RSI = (df['ua'][-1] / (df['ua'][-1]+df['da'][-1])) * 100
+            RSI = (0.35*df['RSI'][-1]) + (0.65*df['RSI'][-2])
             if RSI > 65:
                 if 75 < slow_k < slow_d: 
                     btc = get_balance(coin[4:])
