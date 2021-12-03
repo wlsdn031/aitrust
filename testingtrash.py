@@ -62,7 +62,7 @@ def targeting():
         df['slow_d']=df['slow_k'].rolling(3).mean()
         slow_d = df['slow_d'][-1]
         slow_k = df['slow_k'][-1]
-        RSI = (df['RSI'][-1] + df['RSI'][-2])/2
+        RSI = (0.35*df['RSI'][-1]) + (0.65*df['RSI'][-2])
         
         if RSI < 25:
             if slow_d < slow_k < 25 :
