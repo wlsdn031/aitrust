@@ -65,6 +65,7 @@ def trading():
             time.sleep(0.2)
             df['up'] = np.where(df.diff(1)['close'] > 0, df.diff(1)['close'], 0)
             df['down'] = np.where(df.diff(1)['close'] < 0, df.diff(1)['close']*(-1), 0)
+            period = 14
             df['ua'] = df['up'].ewm(com = period-1, min_periods = period).mean()
             df['da'] = df['down'].ewm(com = period-1, min_periods = period).mean()
             df['RSI'] = df['ua']*100 / (df['da'] + df['ua'])
