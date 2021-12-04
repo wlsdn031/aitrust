@@ -9,7 +9,7 @@ import datetime
 
 access = "0hNyHckgUEQ0GpFb97xmHOtLGKx8AevNu7pzz2Vo"
 secret = "NtOH4y4d3G2I4gG13G1KVhAYhPck2xWMxLd6xYvd"
-havelist=[]
+havelist=["KRW-MATIC", "KRW-THETA", "KRW-SBD", "KRW-STORJ", "KRW-QKC", "KRW-STRK","KRW-OMG", "KRW-WAVES"]
 buyinglist = []
 def get_balance(ticker):
     """잔고 조회"""
@@ -22,51 +22,6 @@ def get_balance(ticker):
             else:
                 return 0
     return 0
-
-def get_current_price(ticker):
-    """현재가 조회"""
-    return pyupbit.get_orderbook(ticker=ticker)["orderbook_units"][0]["ask_price"]
-    time.sleep(0.2)
-
-def checking(ticker):
-    df=pyupbit.get_ohlcv(ticker, interval='minute3', count=60)
-    time.sleep(0.2)
-    df['up'] = np.where(df.diff(1)['close'] > 0, df.diff(1)['close'], 0)
-    df['down'] = np.where(df.diff(1)['close'] < 0, df.diff(1)['close']*(-1), 0)
-    df['ua'] = df['up'].rolling(window=14).mean()
-    df['da'] = df['down'].rolling(window=14).mean()
-    df['RSI'] = df['ua']*100 / (df['da'] + df['ua'])
-    df['fast_k']=100*((df['close']-df['low'].rolling(9).min()) / (df['high'].rolling(9).max()-df['low'].rolling(9).min()))
-    df['slow_k']=df['fast_k'].rolling(3).mean()
-    df['slow_d']=df['slow_k'].rolling(3).mean()
-    slow_d = df['slow_d'][-2]
-    slow_k = df['slow_k'][-2]
-
-    RSI =  df['ua'][-2]*100 / (df['da'][-2] + df['ua'][-2])
-
-def targeting():
-    tickers = pyupbit.get_tickers(fiat="KRW")
-    time.sleep(0.2)
-    for coin in tickers:
-        df=pyupbit.get_ohlcv(coin, interval='minute1', count=80)
-        time.sleep(0.2)
-        df['up'] = np.where(df.diff(5)['close'] > 0, df.diff(5)['close'], 0)
-        df['down'] = np.where(df.diff(5)['close'] < 0, df.diff(5)['close']*(-1), 0)
-        df['ua'] = df['up'].rolling(window=70).mean()
-        df['da'] = df['down'].rolling(window=70).mean()
-        df['RSI'] = df['ua']*100 / (df['da'] + df['ua'])
-        df['fast_k']=100*((df['close']-df['low'].rolling(45).min()) / (df['high'].rolling(45).max()-df['low'].rolling(45).min()))
-        df['slow_k']=df['fast_k'].rolling(15).mean()
-        df['slow_d']=df['slow_k'].rolling(15).mean()
-        slow_d = df['slow_d'][-2]
-        slow_k = df['slow_k'][-2]
-
-        RSI = df['ua'][-2]*100 / (df['da'][-2] + df['ua'][-2])
-        if RSI < 100:
-            if slow_d < slow_k < 100 :
-                buyinglist.append(coin)
-    print(buyinglist)
-    
 
 def trading():
     buyinglist=[]
@@ -85,7 +40,7 @@ def trading():
         slow_d = df['slow_d'][-2]
         slow_k = df['slow_k'][-2]
 
-        RSI = df['ua'][-2]*100 / (df['da'][-2] + df['ua'][-2])
+        RSI = df['RSI'][-2]
         if RSI > 65:
             if 75 < slow_k < slow_d: 
                 btc = get_balance(coin[4:])
@@ -110,8 +65,8 @@ def trading():
             time.sleep(0.2)
             df['up'] = np.where(df.diff(1)['close'] > 0, df.diff(1)['close'], 0)
             df['down'] = np.where(df.diff(1)['close'] < 0, df.diff(1)['close']*(-1), 0)
-            df['ua'] = df['up'].rolling(window=14).mean()
-            df['da'] = df['down'].rolling(window=14).mean()
+            df['ua'] = df['up'].ewm(com = period-1, min_periods = period).mean()
+            df['da'] = df['down'].ewm(com = period-1, min_periods = period).mean()
             df['RSI'] = df['ua']*100 / (df['da'] + df['ua'])
             df['fast_k']=100*((df['close']-df['low'].rolling(9).min()) / (df['high'].rolling(9).max()-df['low'].rolling(9).min()))
             df['slow_k']=df['fast_k'].rolling(3).mean()
@@ -119,7 +74,7 @@ def trading():
             slow_d = df['slow_d'][-2]
             slow_k = df['slow_k'][-2]
 
-            RSI = df['ua'][-2]*100 / (df['da'][-2] + df['ua'][-2])
+            RSI = df['RSI'][-2]
             if RSI < 25:
                 if slow_d < slow_k < 25 :
                     buyinglist.append(coin)
@@ -146,7 +101,7 @@ def trading():
             havelist.append(coin)
             print("buy" + coin)
     time.sleep(1)
-    print("cycle")
+    print("cycle`")
     buyinglist=[]
 
 print("autotrade start")
