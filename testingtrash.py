@@ -9,7 +9,7 @@ import datetime
 
 access = "0hNyHckgUEQ0GpFb97xmHOtLGKx8AevNu7pzz2Vo"
 secret = "NtOH4y4d3G2I4gG13G1KVhAYhPck2xWMxLd6xYvd"
-havelist=["KRW-MATIC", "KRW-THETA", "KRW-SBD", "KRW-STORJ", "KRW-QKC", "KRW-STRK","KRW-OMG", "KRW-WAVES"]
+havelist=[]
 buyinglist = []
 def get_balance(ticker):
     """잔고 조회"""
@@ -85,7 +85,7 @@ def trading():
         if len(buyinglist) == 0:
             print(len(buyinglist))
             pass
-        elif 0<(krw*0.0001)<2:
+        elif 1<(krw*0.0001)<2:
             new_buyinglist.append(buyinglist[0])
         else:
             krwf = math.floor(krw*0.0001)
