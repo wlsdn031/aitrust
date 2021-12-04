@@ -29,7 +29,7 @@ def get_current_price(ticker):
     time.sleep(0.2)
 
 def checking(ticker):
-    df=pyupbit.get_ohlcv(ticker, interval='minute5', count=60)
+    df=pyupbit.get_ohlcv(ticker, interval='minute3', count=60)
     time.sleep(0.2)
     df['up'] = np.where(df.diff(1)['close'] > 0, df.diff(1)['close'], 0)
     df['down'] = np.where(df.diff(1)['close'] < 0, df.diff(1)['close']*(-1), 0)
@@ -71,7 +71,7 @@ def targeting():
 def trading():
     buyinglist=[]
     for coin in havelist:
-        df=pyupbit.get_ohlcv(coin, interval='minute5', count=60)
+        df=pyupbit.get_ohlcv(coin, interval='minute3', count=60)
         time.sleep(0.2)
         df['up'] = np.where(df.diff(1)['close'] > 0, df.diff(1)['close'], 0)
         df['down'] = np.where(df.diff(1)['close'] < 0, df.diff(1)['close']*(-1), 0)
@@ -105,7 +105,7 @@ def trading():
         tickers = pyupbit.get_tickers(fiat="KRW")
         time.sleep(0.2)
         for coin in tickers:
-            df=pyupbit.get_ohlcv(coin, interval='minute5', count=60)
+            df=pyupbit.get_ohlcv(coin, interval='minute3', count=60)
             time.sleep(0.2)
             df['up'] = np.where(df.diff(1)['close'] > 0, df.diff(1)['close'], 0)
             df['down'] = np.where(df.diff(1)['close'] < 0, df.diff(1)['close']*(-1), 0)
@@ -152,17 +152,25 @@ print("autotrade start")
 upbit = pyupbit.Upbit(access, secret)
 
 schedule.every().hour.at(":00:00").do(trading)
-schedule.every().hour.at(":05:00").do(trading)
-schedule.every().hour.at(":10:00").do(trading)
+schedule.every().hour.at(":03:00").do(trading)
+schedule.every().hour.at(":06:00").do(trading)
+schedule.every().hour.at(":09:00").do(trading)
+schedule.every().hour.at(":12:00").do(trading)
 schedule.every().hour.at(":15:00").do(trading)
-schedule.every().hour.at(":20:00").do(trading)
-schedule.every().hour.at(":25:00").do(trading)
+schedule.every().hour.at(":18:00").do(trading)
+schedule.every().hour.at(":21:00").do(trading)
+schedule.every().hour.at(":24:00").do(trading)
+schedule.every().hour.at(":27:00").do(trading)
 schedule.every().hour.at(":30:00").do(trading)
-schedule.every().hour.at(":35:00").do(trading)
-schedule.every().hour.at(":40:00").do(trading)
+schedule.every().hour.at(":33:00").do(trading)
+schedule.every().hour.at(":36:00").do(trading)
+schedule.every().hour.at(":39:00").do(trading)
+schedule.every().hour.at(":42:00").do(trading)
 schedule.every().hour.at(":45:00").do(trading)
-schedule.every().hour.at(":50:00").do(trading)
-schedule.every().hour.at(":55:00").do(trading)
+schedule.every().hour.at(":48:00").do(trading)
+schedule.every().hour.at(":51:00").do(trading)
+schedule.every().hour.at(":54:00").do(trading)
+schedule.every().hour.at(":57:00").do(trading)
 
 while True:
     schedule.run_pending()
