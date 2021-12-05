@@ -9,7 +9,7 @@ import datetime
 
 access = "0hNyHckgUEQ0GpFb97xmHOtLGKx8AevNu7pzz2Vo"
 secret = "NtOH4y4d3G2I4gG13G1KVhAYhPck2xWMxLd6xYvd"
-havelist=["KRW-ONG", "KRW-ETC", "KRW-HUM", "KRW-NEO", "KRW-SRM", "KRW-SAND", "KRW-ENJ", "KRW-PLA"]
+havelist=["KRW-MLK","KRW-QTUM", "KRW-AXS","KRW-ICX","KRW-SRM", "KRW-SAND", "KRW-ENJ", "KRW-PLA"]
 buyinglist = []
 def get_balance(ticker):
     """잔고 조회"""
@@ -25,6 +25,8 @@ def get_balance(ticker):
 
 def trading():
     buyinglist=[]
+    havelist = set(havelist)
+    havelist = list(havelist)
     for coin in havelist:
         df=pyupbit.get_ohlcv(coin, interval='minute3', count=80)
         time.sleep(0.2)
@@ -76,12 +78,11 @@ def trading():
             slow_k = df['slow_k'][-2]
 
             RSI = df['RSI'][-2]
-            if RSI < 23:
+            if RSI < 22:
                 if slow_d < slow_k < 25 :
                     buyinglist.append(coin)
         
         print(buyinglist)
-        buyinglist=list(set(buyinglist)-set(havelist))
         new_buyinglist=[]
         if len(buyinglist) == 0:
             print(len(buyinglist))
