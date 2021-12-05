@@ -9,7 +9,7 @@ import datetime
 
 access = "0hNyHckgUEQ0GpFb97xmHOtLGKx8AevNu7pzz2Vo"
 secret = "NtOH4y4d3G2I4gG13G1KVhAYhPck2xWMxLd6xYvd"
-havelist=[]
+havelist=["KRW-ONG", "KRW-ETC", "KRW-HUM", "KRW-NEO", "KRW-SRM", "KRW-SAND", "KRW-ENJ", "KRW-PLA"]
 buyinglist = []
 def get_balance(ticker):
     """잔고 조회"""
@@ -41,7 +41,7 @@ def trading():
         slow_k = df['slow_k'][-2]
 
         RSI = df['RSI'][-2]
-        if RSI > 65:
+        if RSI > 63:
             if 75 < slow_k < slow_d: 
                 btc = get_balance(coin[4:])
                 upbit.sell_market_order(coin, btc*0.9995)
@@ -76,7 +76,7 @@ def trading():
             slow_k = df['slow_k'][-2]
 
             RSI = df['RSI'][-2]
-            if RSI < 25:
+            if RSI < 23:
                 if slow_d < slow_k < 25 :
                     buyinglist.append(coin)
         
@@ -102,7 +102,7 @@ def trading():
             havelist.append(coin)
             print("buy" + coin)
     time.sleep(1)
-    print("cycle`")
+    print("cycle")
     buyinglist=[]
 
 print("autotrade start")
