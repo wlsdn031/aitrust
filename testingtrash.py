@@ -24,9 +24,11 @@ def get_balance(ticker):
     return 0
 
 def trading():
-    buyinglist=[]
+    global havelist
     havelist = set(havelist)
     havelist = list(havelist)
+
+    buyinglist=[]
     for coin in havelist:
         df=pyupbit.get_ohlcv(coin, interval='minute3', count=80)
         time.sleep(0.2)
@@ -108,7 +110,6 @@ def trading():
 
 print("autotrade start")
 upbit = pyupbit.Upbit(access, secret)
-
 schedule.every().hour.at("00:00").do(trading)
 schedule.every().hour.at("03:00").do(trading)
 schedule.every().hour.at("06:00").do(trading)
